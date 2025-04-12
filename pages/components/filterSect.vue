@@ -5,7 +5,7 @@
             <label class="filter-sect-title" for="nombre">
                 ¡Busca por nombre a tu pokemon!</label>
             <input type="text" v-model="filter.name"  v-on:keyup.enter = "applyFilters" v-on:keyup="applyFilters" placeholder="Ingresa un nombre" id="nombre">
-            {{ filter.name }}
+            
         </div>
         <div class="filter-color filter-sect" >
             <p class="filter-sect-title">Color del pokemon:</p>

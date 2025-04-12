@@ -34,22 +34,27 @@ export default {
       pokemons: [],
       image: [],
       id: 5,
-      currentPage: 5,
+      currentPage: localStorage.getItem('current') ? localStorage.getItem('current') : 1,
       limit: 12,
       total: 0,
       userfilters: {},
     }
   }, mounted() {
     console.log("se monta", this.currentPage);
-    
-    this.fetchCharacters(this.currentPage)
+    console.log(localStorage.getItem('current'));
+    setTimeout(() => {
+      localStorage.getItem('current') ? this.currentPage = localStorage.getItem('current') : this.currentPage = 1; 
+            this.fetchCharacters(this.currentPage)
+      }, 1000)
   }, watch: {
     currentPage() {
       console.log("CurrentPage cambió: ", this.currentPage);
+      localStorage.setItem('current', this.currentPage)
       this.fetchCharacters(this.currentPage)
+
     },
     limit() {
-      this.currentPage = 5;
+      localStorage.clear();
       this.fetchCharacters(this.currentPage)
     }
   },

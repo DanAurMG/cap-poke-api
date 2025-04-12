@@ -17,6 +17,7 @@ export default {
   name: 'charCardList',
   props: {
     pokemonList: Array
+    
   },mounted(){
     
   }, methods:{
