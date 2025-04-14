@@ -1,53 +1,54 @@
 <template>
     <div class="filter-container">
         <b-button class="button-filter-del" @click="delFilter">Eliminar los filtros</b-button>
+        <b-button class="button-filter-del" @click="applyFilters">Buscar</b-button>
         <div class="filter-name filter-sect">
             <label class="filter-sect-title" for="nombre">
                 ¡Busca por nombre a tu pokemon!</label>
             <input type="text" v-model="filter.name"  v-on:keyup.enter = "applyFilters" v-on:keyup="applyFilters" placeholder="Ingresa un nombre" id="nombre">
-            
+
         </div>
         <div class="filter-color filter-sect" >
             <p class="filter-sect-title">Color del pokemon:</p>
             <div class="checks-sect">
                 <div>
-                    <input type="checkbox" name="verde" id="verde">
+                    <input v-model="filter.color" value="green" type="checkbox" name="verde" id="verde">
                     <label for="verde">Verde</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="rojo" id="rojo">
+                    <input v-model="filter.color" value="red" type="checkbox" name="rojo" id="rojo">
                     <label for="rojo">rojo</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="azul" id="azul">
+                    <input v-model="filter.color" value="blue" type="checkbox" name="azul" id="azul">
                     <label for="azul">azul</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="amarillo" id="amarillo">
+                    <input v-model="filter.color" value="yellow" type="checkbox" name="amarillo" id="amarillo">
                     <label for="amarillo">amarillo</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="blanco" id="blanco">
+                    <input v-model="filter.color" value="white" type="checkbox" name="blanco" id="blanco">
                     <label for="blanco">blanco</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="cafe" id="cafe">
+                    <input v-model="filter.color" value="brown" type="checkbox" name="cafe" id="cafe">
                     <label for="cafe">café</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="rosa" id="rosa">
+                    <input v-model="filter.color" value="pink" type="checkbox" name="rosa" id="rosa">
                     <label for="rosa">rosa</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="morado" id="morado">
+                    <input v-model="filter.color" value="purple" type="checkbox" name="morado" id="morado">
                     <label for="morado">morado</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="gris" id="gris">
+                    <input v-model="filter.color" value="gray" type="checkbox" name="gris" id="gris">
                     <label for="gris">gris</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="negro" id="negro">
+                    <input v-model="filter.color" value="black" type="checkbox" name="negro" id="negro">
                     <label for="negro">negro</label>
                 </div>
             </div>
@@ -95,7 +96,7 @@
                     <label for="mAlto">Muy alto</label>
                 </div>
             </div>
-        
+
         </div>
         <div class="filter-rarity filter-sect">
             <p class="filter-sect-title">Rareza del pokemon:</p>
@@ -113,9 +114,9 @@
                     <label for="mitico">Mítico</label>
                 </div>
             </div>
-        
+
         </div>
-        
+
 
     </div>
 </template>
@@ -123,21 +124,23 @@
 <script>
 export default{
     name: 'filterSection',
-    
+
     data(){
         return {
             filter: {
                 name: '',
-                color: '',
-                weight: '',
-                height: '',
-                rarity: '',
+                color: [],
+                weight: [],
+                height: [],
+                rarity: [],
 
             }
         }
     }, methods: {
         applyFilters(){
-            this.$emit("filter-pokemon", {...this.filter})
+          console.log("Segun en string ", JSON.stringify(this.filter.color));
+
+          this.$emit("filter-pokemon", {...this.filter})
         },delFilter(){
             this.filter.name= "";
             this.filter.color= "";
@@ -180,13 +183,13 @@ export default{
         background-color: rgb(223, 59, 59);
         color: white;
     }
-    
+
     .filter-sect-title{
         font-weight: bold;
         font-family: 'Courier New', Courier, monospace;
         font-size: large;
     }
-    
+
     .filter-color{
         display: flex;
         flex-direction: column;

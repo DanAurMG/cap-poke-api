@@ -85,7 +85,7 @@ export default {
             this.pokemon = responseGraphPoke.data.data.gen3_species[0];
             console.log(this.pokemon.color.name);
             console.log(this.pokemon.color.name);
-            
+
         }
     }
 }
@@ -134,7 +134,7 @@ export default {
     align-items: center;
 }
 .poke-page-container{
-   
+
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

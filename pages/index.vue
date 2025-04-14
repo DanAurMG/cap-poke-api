@@ -13,7 +13,7 @@
           <input v-model="limit" type="number" name="limite" id="limit">
         </div>
       </div>
-      <charCardList :pokemonList="pokemons" />
+      <charCardList :pokemonList="pokemons" :currentPage="this.currentPage"/>
     </div>
   </div>
 </template>
@@ -35,27 +35,28 @@ export default {
       image: [],
       id: 5,
       currentPage: localStorage.getItem('current') ? localStorage.getItem('current') : 1,
-      limit: 12,
+      limit: localStorage.getItem('limit') ? localStorage.getItem('limit') : 12,
       total: 0,
       userfilters: {},
     }
   }, mounted() {
-    console.log("se monta", this.currentPage);
-    console.log(localStorage.getItem('current'));
+    const pruebaFit = localStorage.getItem('prueba') ? localStorage.getItem('prueba') : 1
     setTimeout(() => {
-      localStorage.getItem('current') ? this.currentPage = localStorage.getItem('current') : this.currentPage = 1; 
-            this.fetchCharacters(this.currentPage)
-      }, 1000)
+      this.currentPage = parseInt(pruebaFit);
+      console.log("con pruebaFit ",this.currentPage);
+      this.reloadPage();
+    }, 250)
   }, watch: {
     currentPage() {
       console.log("CurrentPage cambió: ", this.currentPage);
-      localStorage.setItem('current', this.currentPage)
-      this.fetchCharacters(this.currentPage)
-
+      localStorage.setItem('prueba', this.currentPage);
+      this.fetchFilterChars();
     },
     limit() {
-      localStorage.clear();
-      this.fetchCharacters(this.currentPage)
+      localStorage.setItem('current', 1);
+      localStorage.setItem('limit', this.limit);
+      this.fetchFilterChars();
+
     }
   },
   computed: {
@@ -64,14 +65,18 @@ export default {
     }
   },
   methods: {
+    reloadPage(){
+      // localStorage.getItem('current') ? this.currentPage = localStorage.getItem('current') : this.currentPage = 1;
+      this.fetchFilterChars();
+    },
     async fetchCharacters() {
       try {
         const query = `
               query{
                 gen3_species: pokemon_v2_pokemonspecies(
                   order_by: {id: asc}
-                  ${this.currentPage ? `offset: ${(this.currentPage * this.limit) - this.limit},` : 0}
-                  ${this.limit ? `limit: ${this.limit},` : 3}
+                  ${this.currentPage ? `offset: ${(this.currentPage * this.limit) - this.limit},` : 1}
+                  ${this.limit ? `limit: ${this.limit},` : 12}
                 ) {
                   id
                   capture_rate
@@ -100,7 +105,7 @@ export default {
                 images: pokemon_v2_pokemonformsprites {
                   sprites(path: "front_default")
                   id
-                }  
+                }
               }
             `
 
@@ -118,7 +123,7 @@ export default {
           sum += responseGraph.data.data.generations[i].pokemon_species.aggregate.count;
         }
         console.log(this.pokemons);
-        
+
 
         this.total = sum;
       } catch (error) {
@@ -126,17 +131,23 @@ export default {
       }
 
     },
+    // ${this.userfilters.color ? `pokemon_v2_pokemoncolor: {name: { in: ${JSON.stringify(this.userfilters.color)}}}` : ``},
     async fetchFilterChars() {
       try {
+        console.log("Entra al filtro", this.userfilters.color);
+
+
         const query = `
           query{
                 gen3_species: pokemon_v2_pokemonspecies(
                   where: {
-                    ${this.userfilters.name ? `name: ${this.userfilters.name},` : ""}
+                    ${this.userfilters.name ? `name: { _regex: ${this.userfilters.name}}` : ``},
+                    ${this.userfilters.color ? `pokemon_v2_pokemoncolor: {name: {_in: ${this.userfilters.color}}}` : ``},
+
                   }
                   order_by: {id: asc}
-                  ${this.currentPage ? `offset: ${(this.currentPage * this.limit) - this.limit},` : 0}
-                  ${this.limit ? `limit: ${this.limit},` : 3}
+                  ${this.currentPage ? `offset: ${(this.currentPage * this.limit) - this.limit},` : 1}
+                  ${this.limit ? `limit: ${this.limit},` : 12}
                 ) {
                   id
                   capture_rate
@@ -155,17 +166,17 @@ export default {
                   color: pokemon_v2_pokemoncolor {
                     name
                   }
-                }generations: pokemon_v2_generation{
-                  pokemon_species: pokemon_v2_pokemonspecies_aggregate {
-                    aggregate {
-                      count
-                    }
+                }generations: pokemon_v2_pokemonspecies_aggregate(
+                  where: {
+                    ${this.userfilters.name ? `name: { _regex: ${this.userfilters.name}}` : ``},
+                    ${this.userfilters.color ? `pokemon_v2_pokemoncolor: {name: {_in: ${this.userfilters.color}}}` : ``},
+
+                  }
+                ){
+                  aggregate {
+                    count
                   }
                 }
-                images: pokemon_v2_pokemonformsprites {
-                  sprites(path: "front_default")
-                  id
-                }  
               }
         `
         const responseFilteredGraph = await axios({
@@ -176,21 +187,31 @@ export default {
           }
         });
 
+
+        console.log("respuesta filtrada", responseFilteredGraph);
+        this.pokemons = responseFilteredGraph.data.data.gen3_species;
+        console.log(this.pokemons);
+        console.log("Cuenta: ",responseFilteredGraph.data.data.generations.aggregate.count);
+        this.total = responseFilteredGraph.data.data.generations.aggregate.count;
       } catch (error) {
-        
+        console.log(error);
+
       }
 
     },
     setFilters(filters = "") {
-      console.log(filters);
+      console.log("filtros ", filters);
+      console.log("iltro de color recibido", filters.color);
+      console.log("stringifiado ", JSON.stringify(filters.color));
+
       this.userfilters.name = filters.name ? `"${filters.name}"` : '';
-      this.userfilters.color = filters.color ? `"${filters.color}"` : '';
+      this.userfilters.color = filters.color ? `${JSON.stringify(filters.color)}` : '';
       this.userfilters.weight = filters.weight ? `"${filters.weight}"` : '';
       this.userfilters.height = filters.height ? `"${filters.height}"` : '';
       this.userfilters.rarity = filters.rarity ? `"${filters.rarity}"` : '';
-       
-      this.fetchFilterChars(1);
-      
+      this.currentPage = 1;
+      this.fetchFilterChars();
+
     },
     delFilters() {
       this.userfilters.name  = "";
@@ -200,7 +221,7 @@ export default {
       this.userfilters.rarity = "";
       console.log(this.userfilters);
       this.fetchFilterChars(1);
-      
+
     }
   }
 }

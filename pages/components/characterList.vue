@@ -1,26 +1,33 @@
 <template>
     <div class="pokemon-listin">
-        <b-button v-for="pokemon in pokemonList" :key="pokemon.id" :to="`/character/${pokemon.color.name}/${pokemon.id}`">
+        <b-button v-for="pokemon in pokemonList" @click="savePage(pokemon)"  :key="pokemon.id">
             <div class="pokemon-card" :class="`pokemon-card-${pokemon.color.name}`">
                 <img class="poke-card-img" :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`" alt="">
                 <h3 class="pokemon-name">{{ pokemon.name}}</h3>
                 <p class="pokemon-habitat">Reside en: <span class="habitat-name">{{ pokemon.pokemon_v2_pokemonhabitat === null ? "Habitat desconocido" : pokemon.pokemon_v2_pokemonhabitat.name}}</span></p>
             </div>
-        
+
         </b-button>
     </div>
 </template>
 
 
 <script>
-export default { 
+export default {
   name: 'charCardList',
   props: {
-    pokemonList: Array
-    
+    pokemonList: Array,
+    currentPage: Number,
+
   },mounted(){
-    
+    console.log(this.currentPage);
+
   }, methods:{
+    savePage(pokemon){
+      console.log("Hola");
+      localStorage.setItem('current', parseInt(this.currentPage));
+      this.$router.push(`/character/${pokemon.color.name}/${pokemon.id}`);
+    },
     async getColorCards(){
         try {
             const query =  `
@@ -29,12 +36,12 @@ export default {
                         id
                         name
                         pokemon_color_id
-        
+
                     }
                 }
             `
         } catch (error) {
-            
+
         }
     }
   }
@@ -45,6 +52,7 @@ export default {
     .pokemon-listin{
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-evenly;
         flex-direction: row;
         gap: 20px;
     }
@@ -66,7 +74,7 @@ export default {
         color: white;
     }
 
-    
+
     .pokemon-card-green{
         background-color:  rgb(134, 185, 134);
     }
@@ -98,7 +106,7 @@ export default {
         background-color:  rgb(53, 53, 53);
         color: white;
     }
-    
+
 
     .poke-card-img{
         max-width: 100px;
