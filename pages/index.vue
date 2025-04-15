@@ -80,6 +80,7 @@ export default {
         console.log("Entra al filtro", this.userfilters.height);
         console.log( "tamaño de altura", this.userfilters.height.length <= 2);
         console.log( "tamaño de color", this.userfilters.color.length);
+        console.log( "tamaño de nombre", this.userfilters.name.length);
         console.log( "tamaño de peso", this.userfilters.weight.length);
 
         console.log(this.userfilters.height);
@@ -94,7 +95,7 @@ export default {
           query{
                 gen3_species: pokemon_v2_pokemonspecies(
                   where: {
-                    ${!this.userfilters.name.length === 0 ? `name: { _regex: ${this.userfilters.name}}` : ""},
+                    ${!(this.userfilters.name.length === 0) ? `name: { _regex: ${this.userfilters.name}}` : ""},
                     ${!(this.userfilters.color.length <= 2)  ? `pokemon_v2_pokemoncolor: {name: {_in: ${this.userfilters.color}}}` : ""},
                     ${!(this.userfilters.weight.length <= 2) ? `pokemon_v2_pokemons: {_or: ${this.userfilters.weight}}` : ""},
                     ${!(this.userfilters.height.length <= 2) ? `pokemon_v2_pokemons: {_or: ${this.userfilters.height}}` : ""},
@@ -123,7 +124,7 @@ export default {
                   }
                 }generations: pokemon_v2_pokemonspecies_aggregate(
                   where: {
-                    ${!this.userfilters.name.length === 0 ? `name: { _regex: ${this.userfilters.name}}` : ""},
+                    ${!(this.userfilters.name.length === 0) ? `name: { _regex: ${this.userfilters.name}}` : ""},
                     ${!(this.userfilters.color.length <= 2)   ? `pokemon_v2_pokemoncolor: {name: {_in: ${this.userfilters.color}}}` : ""},
                     ${!(this.userfilters.weight.length <= 2)  ? `pokemon_v2_pokemons: {_or: ${this.userfilters.weight}}` : ""},
                     ${!(this.userfilters.height.length <= 2) ? `pokemon_v2_pokemons: {_or: ${this.userfilters.height}}` : ""},

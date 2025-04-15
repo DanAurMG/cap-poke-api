@@ -123,9 +123,9 @@ export default {
             this.$emit("filter-pokemon", { ...this.filter })
         }, delFilter() {
             this.filter.name = "";
-            this.filter.color = "";
-            this.filter.weight = "";
-            this.filter.height = "";
+            this.filter.color = [];
+            this.filter.weight = [];
+            this.filter.height = [];
             this.$emit("del-filters")
         }
     }
