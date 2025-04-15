@@ -5,10 +5,11 @@
         <div class="filter-name filter-sect">
             <label class="filter-sect-title" for="nombre">
                 ¡Busca por nombre a tu pokemon!</label>
-            <input type="text" v-model="filter.name"  v-on:keyup.enter = "applyFilters" v-on:keyup="applyFilters" placeholder="Ingresa un nombre" id="nombre">
+            <input type="text" v-model="filter.name" v-on:keyup.enter="applyFilters" v-on:keyup="applyFilters"
+                placeholder="Ingresa un nombre" id="nombre">
 
         </div>
-        <div class="filter-color filter-sect" >
+        <div class="filter-color filter-sect">
             <p class="filter-sect-title">Color del pokemon:</p>
             <div class="checks-sect">
                 <div>
@@ -58,19 +59,19 @@
             <p class="filter-sect-title">Peso del pokemon:</p>
             <div class="checks-sect">
                 <div>
-                    <input type="checkbox" name="ligero" id="ligero">
+                    <input v-model="filter.weight"  type="checkbox" value='{weight: { _lte: 50 }}' name="ligero" id="ligero">
                     <label for="ligero">Ligero</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="lAlto" id="meidano">
+                    <input v-model="filter.weight" type="checkbox" value='{weight:{ _gte: 51, _lte: 89 }}' name="mediano" id="mediano">
                     <label for="meidano">Mediano</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="pesado" id="pesado">
+                    <input v-model="filter.weight" type="checkbox" value='{weight: { _gte: 90, _lte: 150 }}' name="pesado" id="pesado">
                     <label for="pesado">Pesado</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="mPesado" id="mPesado">
+                    <input v-model="filter.weight" type="checkbox" value='{weight: { _gte: 151 }}' name="mPesado" id="mPesado">
                     <label for="mPesado">Muy pesado</label>
                 </div>
             </div>
@@ -80,73 +81,51 @@
             <p class="filter-sect-title">Talla del pokemon:</p>
             <div class="checks-sect">
                 <div>
-                    <input type="checkbox" name="pequeño" id="pequeño">
+                    <input v-model="filter.height" type="checkbox" value='{height: { _lte: 10 }}' name="pequeño" id="pequeño">
                     <label for="pequeño">Pequeño</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="lAlto" id="lAlto">
+                    <input v-model="filter.height" type="checkbox" value='{height:{ _gte: 11, _lte: 25 }}' name="lAlto" id="lAlto">
                     <label for="lAlto">Mediano</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="alto" id="alto">
+                    <input v-model="filter.height" type="checkbox" value='{height:{ _gte: 26, _lte: 45 }}' name="alto" id="alto">
                     <label for="alto">Alto</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="mAlto" id="mAlto">
+                    <input v-model="filter.height" type="checkbox" value='{height:{ _gte: 46}}' name="mAlto" id="mAlto">
                     <label for="mAlto">Muy alto</label>
                 </div>
             </div>
 
         </div>
-        <div class="filter-rarity filter-sect">
-            <p class="filter-sect-title">Rareza del pokemon:</p>
-            <div class="checks-sect">
-                <div>
-                    <input type="checkbox" name="comun" id="comun">
-                    <label for="comun">Común</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="legendario" id="legendario">
-                    <label for="legendario">Legendario</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="mitico" id="mitico">
-                    <label for="mitico">Mítico</label>
-                </div>
-            </div>
-
-        </div>
-
 
     </div>
 </template>
 
 <script>
-export default{
+export default {
     name: 'filterSection',
 
-    data(){
+    data() {
         return {
             filter: {
                 name: '',
                 color: [],
                 weight: [],
                 height: [],
-                rarity: [],
-
             }
         }
     }, methods: {
-        applyFilters(){
-          console.log("Segun en string ", JSON.stringify(this.filter.color));
+        applyFilters() {
+            console.log("Segun en string para altura", JSON.stringify(this.filter.height));
 
-          this.$emit("filter-pokemon", {...this.filter})
-        },delFilter(){
-            this.filter.name= "";
-            this.filter.color= "";
-            this.filter.weight= "";
-            this.filter.height= "";
-            this.filter.rarity= "";
+            this.$emit("filter-pokemon", { ...this.filter })
+        }, delFilter() {
+            this.filter.name = "";
+            this.filter.color = "";
+            this.filter.weight = "";
+            this.filter.height = "";
             this.$emit("del-filters")
         }
     }
@@ -155,95 +134,94 @@ export default{
 </script>
 
 <style>
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
 
-    .filter-container{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
+.filter-name {
+    padding: 30px 0px 30px 30px;
+    background-color: rgb(88, 153, 197);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 
-    .filter-name{
-        padding: 30px 0px 30px 30px;
-        background-color: rgb(88, 153, 197);
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
+}
 
-    }
+.button-filter-del {
+    background-color: rgb(230, 112, 112);
+    color: black;
+    border: solid black 3px;
+    border-radius: 20px;
+    padding: 10px;
+    font-weight: bold;
+}
 
-    .button-filter-del{
-        background-color: rgb(230, 112, 112);
-        color: black;
-        border: solid black 3px;
-        border-radius: 20px;
-        padding: 10px;
-        font-weight: bold;
-    }
-    .button-filter-del:hover{
-        background-color: rgb(223, 59, 59);
-        color: white;
-    }
+.button-filter-del:hover {
+    background-color: rgb(223, 59, 59);
+    color: white;
+}
 
-    .filter-sect-title{
-        font-weight: bold;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: large;
-    }
+.filter-sect-title {
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: large;
+}
 
-    .filter-color{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: burlywood;
-        margin-top: 20px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding: 20px 0px 20px 30px;
-    }
+.filter-color {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: burlywood;
+    margin-top: 20px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px 0px 20px 30px;
+}
 
-    .filter-weight{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: rgb(181, 222, 135);
-        margin-top: 20px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding: 20px 0px 20px 30px;
-    }
+.filter-weight {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgb(181, 222, 135);
+    margin-top: 20px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px 0px 20px 30px;
+}
 
-    .filter-rarity{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        background-color: rgb(168, 135, 222);
-        margin-top: 20px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding: 20px 0px 20px 30px;
-    }
+.filter-rarity {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    background-color: rgb(168, 135, 222);
+    margin-top: 20px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px 0px 20px 30px;
+}
 
-    .filter-height{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: rgb(222, 135, 142);
-        margin-top: 20px;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding: 20px 0px 20px 30px;
-    }
+.filter-height {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgb(222, 135, 142);
+    margin-top: 20px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px 0px 20px 30px;
+}
 
-    .checks-sect{
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
+.checks-sect {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+}
 
-    .filter-sect{
-        width: 100%;
-    }
-
+.filter-sect {
+    width: 100%;
+}
 </style>
